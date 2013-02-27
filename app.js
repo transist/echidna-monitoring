@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var app = express();
+
 var https = require('https');
 var http = require('http');
 var redis = require('redis');
@@ -61,33 +61,8 @@ function contains(re, res, data) {
 }
 
 
-var monitors = [
-  monitor('secure', 'status'),
-  monitor('secure', 'statusCode'),
-  monitor('accessible', 'status'),
-  monitor('accessible', 'statusCode')
-];
-
-app.get('/', function(req, res){
-  res.setHeader('Content-Type', 'text/plain');
-  var multi = redisClient.multi();
-  monitors.forEach(function (key, index) {
-    multi.get(key);
-  });
-
-  multi.exec(function(err, replies) {
-    var acc = {};
-    replies.forEach(function (reply, index) {
-        //console.log("Reply " + index + ": " + reply.toString());
-        var key = monitors[index].substr(NAMESPACE_MON.length + 1)
-        acc[key] = reply.toString();
-    });
-    res.send(JSON.stringify(acc, null, '\t'));
-    res.end();
-  });
-});
-
 function main() {
+  var app = express();
   var server = http.createServer(app);
   var redisClient = redis.createClient(ECHIDNA_REDIS_PORT, ECHIDNA_REDIS_HOST);
   console.log('redis ' + ECHIDNA_REDIS_HOST + ':' + ECHIDNA_REDIS_PORT + ' namespace ' + ECHIDNA_REDIS_NAMESPACE)
@@ -97,6 +72,33 @@ function main() {
   server.listen(ECHIDNA_MONITORING_PORT, ECHIDNA_MONITORING_IP, function() {
     console.log('Listening on ' + server.address().address + ':' + server.address().port);
   });
+
+  var monitors = [
+    monitor('secure', 'status'),
+    monitor('secure', 'statusCode'),
+    monitor('accessible', 'status'),
+    monitor('accessible', 'statusCode')
+  ];
+
+  app.get('/', function(req, res){
+    res.setHeader('Content-Type', 'text/plain');
+    var multi = redisClient.multi();
+    monitors.forEach(function (key, index) {
+      multi.get(key);
+    });
+
+    multi.exec(function(err, replies) {
+      var acc = {};
+      replies.forEach(function (reply, index) {
+          //console.log("Reply " + index + ": " + reply.toString());
+          var key = monitors[index].substr(NAMESPACE_MON.length + 1)
+          acc[key] = reply.toString();
+      });
+      res.send(JSON.stringify(acc, null, '\t'));
+      res.end();
+    });
+  });
+
 }
 
 if (require.main === module) {
