@@ -1,0 +1,8 @@
+# redis
+export ECHIDNA_REDIS_HOST=127.0.0.1
+export ECHIDNA_REDIS_PORT=6379
+export ECHIDNA_REDIS_NAMESPACE=e:d
+# echidna-monitoring
+export ECHIDNA_MONITORING_IP=0.0.0.0
+export ECHIDNA_MONITORING_PORT=3333
+node app.js

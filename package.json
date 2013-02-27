@@ -1,0 +1,19 @@
+{
+  "name": "echidna-tests",
+  "version": "0.0.0",
+  "description": "echidna test suite",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "rngadam@gmail.com",
+  "license": "Proprietary",
+  "dependencies": {
+    "mocha": "~1.8.1",
+    "express": "~3.1.0",
+    "http": "0.0.0",
+    "redis": "~0.8.2"
+  }
+}

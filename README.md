@@ -1,0 +1,1 @@
+Configuration variables example in start.sh
