@@ -65,7 +65,7 @@ function main() {
   var app = express();
   var server = http.createServer(app);
   var redisClient = redis.createClient(ECHIDNA_REDIS_PORT, ECHIDNA_REDIS_HOST);
-  console.log('redis ' + ECHIDNA_REDIS_HOST + ':' + ECHIDNA_REDIS_PORT + ' namespace ' + ECHIDNA_REDIS_NAMESPACE)
+  console.log('redis://' + ECHIDNA_REDIS_HOST + ':' + ECHIDNA_REDIS_PORT + '/' + ECHIDNA_REDIS_NAMESPACE)
   setInterval(checkUrl.bind(null, redisClient, 'https://echidna.transi.st', 'secure', isRestricted), 5000);
   var re =  /<\/html>/;
   setInterval(checkUrl.bind(null, redisClient, 'https://echidna.transi.st/SecretLocation', 'accessible', contains.bind(null, re)), 5000);
@@ -80,7 +80,7 @@ function main() {
     monitor('accessible', 'statusCode')
   ];
 
-  app.get('/', function(req, res){
+  app.get('*', function(req, res){
     res.setHeader('Content-Type', 'text/plain');
     var multi = redisClient.multi();
     monitors.forEach(function (key, index) {
